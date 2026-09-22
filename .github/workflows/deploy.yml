@@ -1,0 +1,78 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write # required for Azure OIDC — no publish profile or client secret is stored
+  contents: read
+
+concurrency:
+  group: deploy-paster
+  cancel-in-progress: false
+
+env:
+  AZURE_RESOURCE_GROUP: rg-paster
+  AZURE_WEBAPP_NAME: paster-sy4ce
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+
+jobs:
+  build-deploy-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Publish
+        run: dotnet publish Paster.csproj -c Release -o "$RUNNER_TEMP/publish"
+
+      - name: Smoke test the published output
+        run: |
+          set -euo pipefail
+          export ASPNETCORE_URLS=http://127.0.0.1:5099
+          export PASTER_STORAGE_ROOT="$RUNNER_TEMP/data"
+          export PASTER_MAX_TOTAL_BYTES=4194304
+          dotnet "$RUNNER_TEMP/publish/Paster.dll" &
+          app=$!
+          trap 'kill $app' EXIT
+          for _ in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:5099/api/health >/dev/null 2>&1 && break
+            sleep 1
+          done
+          python3 tools/smoke.py http://127.0.0.1:5099
+
+      - name: Sign in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy
+        run: |
+          az webapp deploy \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --name "$AZURE_WEBAPP_NAME" \
+            --src-path "$RUNNER_TEMP/publish" \
+            --type zip \
+            --clean true
+
+      - name: Verify the running app
+        run: |
+          set -euo pipefail
+          url="https://$AZURE_WEBAPP_NAME.azurewebsites.net"
+          # The free tier unloads idle apps; the first request after a sleep has to
+          # wait for the worker to warm up.
+          for attempt in $(seq 1 20); do
+            if curl -fsS --max-time 60 "$url/api/health" >/dev/null; then break; fi
+            echo "waiting for $url (attempt $attempt)"
+            sleep 10
+          done
+          python3 tools/smoke.py "$url"

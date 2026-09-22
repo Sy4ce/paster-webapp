@@ -1,0 +1,614 @@
+/* =========================================================================
+   Paster — 行李寄存 / claim-ticket styling.
+   Cool grey ticket stock, printed-form hairline structure, and one bold
+   object: the split-flap countdown that physically counts the file down.
+   ========================================================================= */
+
+:root {
+  --ground: #dee1dd;
+  --sheet: #f5f6f3;
+  --ink: #15191c;
+  --ink-2: #5b6469;
+  --rule: #b6bcb6;
+  --stamp: #a32b1e;
+  --panel: #1b2226;
+  --panel-2: #12171a;
+  --live: #2e7d52;
+
+  --display: "Bahnschrift SemiCondensed", "Bahnschrift", "DIN Alternate", "Arial Narrow",
+    "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  --body: "Segoe UI", system-ui, -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  --sheet-radius: 3px;
+  --gutter: 1.4rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.page {
+  width: min(100% - 2rem, 42rem);
+  margin: 0 auto;
+  padding: 2.6rem 0 4rem;
+}
+
+/* ---------------------------------------------------------------- masthead */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.wordmark {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.wordmark-sub {
+  font-family: var(--body);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: var(--ink-2);
+}
+
+.vitals {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+
+.vitals-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+
+.vitals[data-state="live"] .vitals-dot {
+  background: var(--live);
+}
+
+.vitals[data-state="waking"] .vitals-dot {
+  background: var(--stamp);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.vitals[data-state="down"] .vitals-dot {
+  background: var(--stamp);
+}
+
+/* ------------------------------------------------------------------ thesis */
+
+.thesis {
+  margin: 2.4rem 0 1.6rem;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 5.4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------ ticket */
+
+.ticket {
+  position: relative;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: var(--sheet-radius);
+  box-shadow: 0 1px 0 rgba(21, 25, 28, 0.06), 0 12px 28px -22px rgba(21, 25, 28, 0.55);
+}
+
+.stub {
+  padding: var(--gutter);
+}
+
+.stub--collect {
+  padding-top: 1.1rem;
+  position: relative;
+}
+
+.stub--collect.is-in {
+  animation: reveal 260ms cubic-bezier(0.22, 0.7, 0.2, 1) both;
+}
+
+.eyebrow {
+  margin: 0 0 0.9rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.eyebrow-no {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------- perforation */
+
+.perf {
+  position: relative;
+  height: 1.5rem;
+}
+
+.perf::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--gutter);
+  right: var(--gutter);
+  border-top: 2px dashed var(--rule);
+}
+
+.notch {
+  position: absolute;
+  top: 50%;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: -0.55rem;
+  border-radius: 50%;
+  background: var(--ground);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.notch--left {
+  left: -0.56rem;
+}
+
+.notch--right {
+  right: -0.56rem;
+}
+
+/* ---------------------------------------------------------------- dropzone */
+
+.drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+  padding: 2.1rem 1rem;
+  border: 2px dashed var(--rule);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+}
+
+.drop:hover,
+.drop:focus-within {
+  border-color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.drop.is-over {
+  border-color: var(--ink);
+  border-style: solid;
+  background: rgba(21, 25, 28, 0.05);
+}
+
+.drop.is-busy {
+  cursor: progress;
+  border-style: solid;
+  border-color: var(--rule);
+  background: rgba(21, 25, 28, 0.03);
+}
+
+.drop-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315191c' stroke-width='2' stroke-linecap='square'%3E%3Cpath d='M12 19V5M5 12l7-7 7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.75;
+}
+
+.drop-main {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.drop-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  word-break: break-all;
+}
+
+/* ---------------------------------------------------------------- progress */
+
+.progress {
+  height: 3px;
+  margin-top: 0.85rem;
+  background: rgba(21, 25, 28, 0.12);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--ink);
+  transition: width 120ms linear;
+}
+
+/* ------------------------------------------------------------------ notice */
+
+.notice {
+  margin: 0.9rem 0 0;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--stamp);
+  font-size: 0.85rem;
+  color: var(--stamp);
+}
+
+/* ------------------------------------------------------------------ pickup */
+
+.pickup {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pickup-link {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.pickup-link:focus-visible {
+  border-color: var(--ink);
+}
+
+.ticket.is-dead .pickup-link {
+  color: var(--ink-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--stamp);
+}
+
+.button {
+  flex: 0 0 auto;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--sheet);
+  font-family: var(--display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.button:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.button:disabled {
+  border-color: var(--rule);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: not-allowed;
+}
+
+.pickup-meta {
+  margin: 0.8rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  word-break: break-all;
+}
+
+/* ------------------------------------------------------- split-flap  clock */
+
+.clock {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  box-shadow: inset 0 0 0 1px #2c353b;
+}
+
+.clock-label {
+  margin: 0;
+  flex: 0 0 auto;
+  writing-mode: vertical-rl;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #8e9ba1;
+}
+
+.flap {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+  margin-left: auto;
+}
+
+.flap-cell {
+  position: relative;
+  width: clamp(2.3rem, 13vw, 3rem);
+  height: clamp(3rem, 17vw, 3.9rem);
+  display: grid;
+  place-items: center;
+  perspective: 320px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #262f34 0 49.6%, #171d21 50.4% 100%);
+  box-shadow: inset 0 0 0 1px #333d43, 0 2px 0 #0b0e10;
+  overflow: hidden;
+}
+
+.flap-cell::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.flap-digit {
+  font-family: var(--mono);
+  font-size: clamp(1.7rem, 9vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1;
+  color: #eef0eb;
+  font-variant-numeric: tabular-nums;
+}
+
+.flap-digit.is-flipping {
+  animation: flap 170ms cubic-bezier(0.3, 0.8, 0.4, 1);
+}
+
+.flap-colon {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  padding: 0 0.05rem;
+}
+
+.flap-colon i {
+  width: 0.24rem;
+  height: 0.24rem;
+  border-radius: 50%;
+  background: #6d7a80;
+}
+
+.clock.is-critical .flap-digit {
+  color: #f0b3a8;
+}
+
+.clock.is-critical .flap-cell {
+  box-shadow: inset 0 0 0 1px #6d2a22, 0 2px 0 #0b0e10;
+}
+
+.clock.is-dead .flap-digit {
+  color: #6d7a80;
+}
+
+.clock.is-dead .flap-cell {
+  background: linear-gradient(180deg, #1d2327 0 49.6%, #12171a 50.4% 100%);
+}
+
+/* ------------------------------------------------------------------- stamp */
+
+.stamp {
+  position: absolute;
+  left: 50%;
+  top: 3.4rem;
+  margin: 0;
+  padding: 0.3rem 0.9rem;
+  transform: translateX(-50%) rotate(-6deg);
+  border: 2px double var(--stamp);
+  color: var(--stamp);
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  mix-blend-mode: multiply;
+  animation: stamp-down 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* -------------------------------------------------------------------- foot */
+
+.foot {
+  margin-top: 1.6rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.foot p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------- dead ends */
+
+.page--dead {
+  display: grid;
+  place-items: center;
+}
+
+.dead {
+  width: min(100% - 2rem, 30rem);
+  padding: 2rem;
+  text-align: center;
+}
+
+.dead-stamp {
+  display: inline-block;
+  margin: 0 0 1.4rem;
+  padding: 0.25rem 0.8rem;
+  transform: rotate(-5deg);
+  border: 2px double var(--stamp);
+  color: var(--stamp);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.dead-title {
+  margin: 0 0 0.6rem;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.dead-body {
+  margin: 0 0 1.6rem;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
+.dead-link {
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* -------------------------------------------------------------- animations */
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes flap {
+  from {
+    transform: rotateX(-72deg);
+    opacity: 0.3;
+  }
+
+  to {
+    transform: rotateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes stamp-down {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) rotate(-6deg) scale(1.5);
+  }
+
+  to {
+    opacity: 0.94;
+    transform: translateX(-50%) rotate(-6deg) scale(1);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 30rem) {
+  .pickup {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .clock {
+    gap: 0.6rem;
+  }
+}

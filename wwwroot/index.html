@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paster · 临时文件寄存</title>
+  <meta name="description" content="寄存一个文件，拿到一条五分钟后作废的取件链接。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2315191c'/%3E%3Cpath d='M7 10h18M7 16h18M7 22h11' stroke='%23f5f6f3' stroke-width='2.4' stroke-linecap='square'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/app.css">
+</head>
+
+<body>
+  <div class="page">
+
+    <header class="masthead">
+      <p class="wordmark">
+        PASTER
+        <span class="wordmark-sub">临时文件寄存</span>
+      </p>
+      <p class="vitals" id="vitals">
+        <span class="vitals-dot" id="vitalsDot" aria-hidden="true"></span>
+        <span class="vitals-text" id="vitalsText">正在连接…</span>
+      </p>
+    </header>
+
+    <p class="thesis">寄存一个文件，<br>拿到一条五分钟后就作废的取件链接。</p>
+
+    <section class="ticket" id="ticket" aria-label="寄存单">
+
+      <div class="stub stub--deposit">
+        <p class="eyebrow"><span class="eyebrow-no">01</span>寄存品 · DEPOSIT</p>
+
+        <label class="drop" id="drop">
+          <input class="sr-only" type="file" id="file">
+          <span class="drop-icon" aria-hidden="true"></span>
+          <span class="drop-main" id="dropMain">拖入文件，或点击选择</span>
+          <span class="drop-meta" id="dropMeta">单文件 ≤ 1 MiB</span>
+        </label>
+
+        <div class="progress" id="progress" hidden>
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <p class="notice" id="notice" role="status" hidden></p>
+      </div>
+
+      <div class="perf" aria-hidden="true">
+        <span class="notch notch--left"></span>
+        <span class="notch notch--right"></span>
+      </div>
+
+      <div class="stub stub--collect" id="collect" hidden>
+        <p class="eyebrow"><span class="eyebrow-no">02</span>取件凭证 · COLLECT</p>
+
+        <div class="pickup">
+          <input class="pickup-link" id="pickupLink" readonly aria-label="取件链接">
+          <button class="button" id="copy" type="button">复制链接</button>
+        </div>
+
+        <div class="clock">
+          <p class="clock-label">剩余时间</p>
+          <div class="flap" id="flap" role="timer" aria-live="off"></div>
+        </div>
+
+        <p class="pickup-meta" id="pickupMeta"></p>
+
+        <p class="stamp" id="stamp" hidden>已 销 毁</p>
+      </div>
+
+    </section>
+
+    <footer class="foot">
+      <p>取件码是随机生成的，猜不到；拿到链接的人才能在五分钟内下载。</p>
+      <p>免费层闲置时会休眠，久未访问后的第一次打开可能要等十几秒。</p>
+    </footer>
+
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+
+</html>

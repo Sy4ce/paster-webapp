@@ -1,0 +1,17 @@
+# build output
+bin/
+obj/
+publish/
+
+# local runtime data (uploaded files)
+data/
+
+# local tooling / scratch (must never be committed)
+.tools/
+.azconfig/
+dotnet-install.ps1
+
+# rider / vs
+.idea/
+.vs/
+*.user
