@@ -60,7 +60,14 @@ Azure 侧的资源：资源组 `rg-paster`、Linux 应用服务计划 `asp-paste
 | `AZURE_TENANT_ID` | 租户 ID |
 | `AZURE_SUBSCRIPTION_ID` | 订阅 ID |
 
-联合凭据的 subject 绑定在 `repo:Sy4ce/paster-webapp:ref:refs/heads/main`，只有这个仓库的 main 分支能换到 Azure 的令牌。
+联合凭据的 subject 绑定 main 分支，只有这个仓库的 main 分支能换到 Azure 的令牌。注意 GitHub 现在签发的 `sub` 里带不可变的数字 ID，所以应用注册上挂了两种格式，缺一个就会登录失败：
+
+```
+repo:Sy4ce/paster-webapp:ref:refs/heads/main
+repo:Sy4ce@233271235/paster-webapp@1381933729:ref:refs/heads/main
+```
+
+排查办法：登录失败时看 Actions 日志里 `Federated token details` 打印的实际 `subject claim`，把它照抄成一条新的联合凭据即可。
 
 ## 目录
 
@@ -70,5 +77,9 @@ TempStore.cs        磁盘存取、配额、到期删除
 PasterOptions.cs    PASTER_* 环境变量
 ExpirySweeper.cs    后台清理任务
 wwwroot/            单页前端（无外部依赖，不加载任何 CDN 资源）
-tools/smoke.py      冒烟测试
+tools/smoke.py      冒烟测试：上传、下载字节比对、下载响应头、超限、404
+tools/verify-expiry.py  真等到期再验一次，确认链接确实作废
 ```
+
+`verify-expiry.py` 每周一自动跑一次（`verify-expiry` workflow，不需要 Azure 凭据），
+因为「五分钟后失效」这句话只有等够五分钟才能验证。

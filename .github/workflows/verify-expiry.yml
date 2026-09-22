@@ -1,0 +1,18 @@
+name: verify-expiry
+
+# The product promise is "the link dies after five minutes", and only a clock can
+# check that. This runs against the live site, needs no Azure credentials, and is
+# kept off the deploy path so a release is not gated on a five-minute wait.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 1'
+
+jobs:
+  expiry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: A link must stop working after its ttl
+        run: python3 tools/verify-expiry.py https://paster-sy4ce.azurewebsites.net

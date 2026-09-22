@@ -55,12 +55,20 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Package
+        run: |
+          set -euo pipefail
+          # az webapp deploy takes an artifact, not a directory, and the zip has to
+          # hold the app at its root.
+          cd "$RUNNER_TEMP/publish"
+          zip -qr "$RUNNER_TEMP/paster.zip" .
+
       - name: Deploy
         run: |
           az webapp deploy \
             --resource-group "$AZURE_RESOURCE_GROUP" \
             --name "$AZURE_WEBAPP_NAME" \
-            --src-path "$RUNNER_TEMP/publish" \
+            --src-path "$RUNNER_TEMP/paster.zip" \
             --type zip \
             --clean true
 
