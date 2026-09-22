@@ -31,6 +31,8 @@ Azure 免费层（F1）总磁盘只有 1 GB，所以默认把占用卡在 64 MiB
 
 ## 本地运行
 
+项目 target `net10.0`，所以本机需要 .NET 10 SDK（`winget install Microsoft.DotNet.SDK.10`）。只有 .NET 9 SDK 的话编译不过。
+
 ```bash
 dotnet run                       # http://localhost:5000
 PASTER_TTL_SECONDS=15 dotnet run # 想快速看链接作废，就把有效期调短
@@ -68,6 +70,32 @@ repo:Sy4ce@233271235/paster-webapp@1381933729:ref:refs/heads/main
 ```
 
 排查办法：登录失败时看 Actions 日志里 `Federated token details` 打印的实际 `subject claim`，把它照抄成一条新的联合凭据即可。
+
+### 已经建好的资源
+
+| 资源 | 名称 / ID |
+| --- | --- |
+| 资源组 | `rg-paster`（East Asia） |
+| 应用服务计划 | `asp-paster`（Linux F1 免费层，1 个实例） |
+| Web App | `paster-sy4ce` → <https://paster-sy4ce.azurewebsites.net> |
+| 应用注册 | `paster-webapp-github`，client id `4338cf72-8d9b-4e4e-baf0-88b1b814b388` |
+| 服务主体角色 | Website Contributor，范围仅 `rg-paster` |
+| 租户 / 订阅 | `e3e2b52c-1261-4b8f-9489-ac1c462346d6` / `6632b65e-1d9f-43df-96c9-cc57ebbb8fdc` |
+
+client id、tenant id、subscription id 都不是密钥，可以公开；真正的凭据是每次运行由 GitHub 签发的短期 OIDC 令牌。
+
+### 常用运维命令
+
+```bash
+# 改配置（例如把单文件上限提到 4 MiB）
+az webapp config appsettings set -g rg-paster -n paster-sy4ce \
+  --settings PASTER_MAX_FILE_BYTES=4194304
+
+# 看应用日志
+az webapp log download -g rg-paster -n paster-sy4ce --log-file logs.zip
+```
+
+改完设置实例会重启；放在 `/home/data/paster` 的文件不受重启和重新部署影响（只跟有效期有关）。
 
 ## 目录
 
