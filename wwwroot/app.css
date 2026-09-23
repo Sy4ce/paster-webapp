@@ -386,15 +386,16 @@ body {
 }
 
 .clock-label-cn {
-  font-size: 0.86rem;
-  letter-spacing: 0.16em;
-  color: #c9d2cf;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #d5dcd9;
 }
 
 .clock-label-en {
   font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.24em;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
   color: #7d8a90;
 }
 

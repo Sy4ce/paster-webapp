@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.StaticFiles;
 using Paster;
 
 var options = PasterOptions.FromEnvironment();
@@ -67,7 +68,13 @@ app.Use(async (context, next) =>
     }
 });
 
-app.UseStaticFiles();
+// The shell is served no-store, so a heuristically cached app.css or app.js would
+// pair a fresh page with stale styling. no-cache forces a revalidation on every
+// load; the ETag still turns unchanged files into 304s.
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = context => context.Context.Response.Headers.CacheControl = "no-cache",
+});
 
 // An explicit route for the shell: with a catch-all fallback endpoint registered,
 // the request already has an endpoint by the time middleware runs, which disables
