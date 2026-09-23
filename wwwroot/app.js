@@ -74,7 +74,11 @@ function clearNotice() {
 
 function describeLimits() {
   if (!limits) return '单文件 ≤ 1 MiB';
-  return `单文件 ≤ ${fmtBytes(limits.maxFileBytes)} · 剩余 ${fmtBytes(limits.freeBytes)} · 存活 ${Math.round(limits.ttlSeconds / 60)} 分钟`;
+  return `单文件 ≤ ${fmtBytes(limits.maxFileBytes)} · 剩余 ${fmtBytes(limits.freeBytes)} · 存活 ${fmtDuration(limits.ttlSeconds)}`;
+}
+
+function fmtDuration(seconds) {
+  return seconds >= 60 ? `${Math.round(seconds / 60)} 分钟` : `${seconds} 秒`;
 }
 
 async function fetchJson(url, timeoutMs) {
@@ -211,11 +215,10 @@ function showTicket(data) {
 function startCountdown(seconds, token) {
   const total = Math.max(0, seconds);
   const startedAt = performance.now();
-  const totalMinutes = Math.max(1, Math.round(total / 60));
   let lastSync = startedAt;
 
   els.clock.classList.remove('is-dead', 'is-critical');
-  renderPickupMeta(totalMinutes);
+  renderPickupMeta(total);
 
   if (ticker) clearInterval(ticker);
 
@@ -240,10 +243,10 @@ function startCountdown(seconds, token) {
   ticker = setInterval(paint, 250);
 }
 
-function renderPickupMeta(totalMinutes) {
+function renderPickupMeta(totalSeconds) {
   const parts = [];
   if (current) parts.push(current.name, fmtBytes(current.size));
-  parts.push(`${totalMinutes} 分钟后自动删除`);
+  parts.push(`${fmtDuration(totalSeconds)}后自动删除`);
   els.pickupMeta.textContent = parts.join(' · ');
 }
 

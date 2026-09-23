@@ -380,12 +380,22 @@ body {
 .clock-label {
   margin: 0;
   flex: 0 0 auto;
-  writing-mode: vertical-rl;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.clock-label-cn {
+  font-size: 0.86rem;
+  letter-spacing: 0.16em;
+  color: #c9d2cf;
+}
+
+.clock-label-en {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: #8e9ba1;
+  color: #7d8a90;
 }
 
 .flap {
@@ -469,16 +479,18 @@ body {
   left: 50%;
   top: 3.4rem;
   margin: 0;
-  padding: 0.3rem 0.9rem;
+  padding: 0.28rem 0.85rem;
   transform: translateX(-50%) rotate(-6deg);
   border: 2px double var(--stamp);
+  /* Ink pressed onto the claim line: opaque enough that the struck-through URL
+     behind it does not fight the lettering. */
+  background: rgba(245, 246, 243, 0.9);
   color: var(--stamp);
   font-family: var(--mono);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   white-space: nowrap;
-  mix-blend-mode: multiply;
   animation: stamp-down 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
@@ -608,7 +620,27 @@ body {
     width: 100%;
   }
 
+  /* A label beside the digits leaves the readout no room at this width, so the
+     panel becomes two rows instead. */
   .clock {
-    gap: 0.6rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+
+  .clock-label {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.55rem;
+  }
+
+  .flap {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+
+  .flap-cell {
+    width: 2.6rem;
+    height: 3.4rem;
   }
 }
