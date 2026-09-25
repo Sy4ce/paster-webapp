@@ -155,7 +155,7 @@ function upload(file) {
 
     const body = xhr.response;
     if (xhr.status === 201 && body && body.url) {
-      els.dropMain.textContent = '已寄存 · 可以再放一个';
+      els.dropMain.textContent = '上传成功';
       els.dropMeta.textContent = describeLimits();
       setTimeout(() => { els.dropMain.textContent = DEFAULT_DROP_MAIN; }, 2500);
       showTicket(body);
@@ -170,7 +170,7 @@ function upload(file) {
     setBusy(false);
     els.dropMain.textContent = DEFAULT_DROP_MAIN;
     els.dropMeta.textContent = describeLimits();
-    showNotice('连不上服务器。检查网络后再试一次。');
+    showNotice('链接服务器错误');
   });
 
   xhr.send(form);
@@ -263,7 +263,7 @@ function expire(reason) {
   els.stamp.hidden = false;
   drawFlap('0000');
   els.flap.setAttribute('aria-label', '已到期，文件已删除');
-  els.pickupMeta.textContent = reason || '取件链接已作废，文件已从服务器删除。重新寄存可以再拿一条。';
+  els.pickupMeta.textContent = reason || '取件链接已作废，文件已从服务器删除';
   current = null;
   loadHealth();
 }
