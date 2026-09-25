@@ -104,7 +104,7 @@ async function loadHealth() {
     if (!busy) els.dropMeta.textContent = describeLimits();
   } catch {
     setVitals('waking', '正在唤醒服务器…');
-    els.dropMeta.textContent = '免费层闲置会休眠，首次访问需要十几秒';
+    els.dropMeta.textContent = '系统启动需要十几秒';
     setTimeout(loadHealth, 5000);
   }
 }
@@ -123,8 +123,13 @@ function upload(file) {
   els.drop.classList.remove('is-over');
   els.file.value = '';
 
+  const name = file.name || '';
+  if (!name.toLowerCase().endsWith('.litematic')) {
+    showNotice('只允许上传 .litematic 投影文件');
+    return;
+  }
   if (limits && file.size > limits.maxFileBytes) {
-    showNotice(`这个文件 ${fmtBytes(file.size)}，超过 ${fmtBytes(limits.maxFileBytes)} 上限。压缩后再试。`);
+    showNotice(`这个文件 ${fmtBytes(file.size)}，超过 ${fmtBytes(limits.maxFileBytes)} 上限`);
     return;
   }
 
