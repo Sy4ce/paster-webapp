@@ -199,7 +199,7 @@ function showTicket(data) {
     size: data.size,
   };
 
-  els.pickupLink.value = data.url;
+  els.pickupLink.value = data.token;
   els.copy.disabled = false;
   els.copy.textContent = '复制ID';
   els.stamp.hidden = true;
@@ -331,28 +331,19 @@ function drawFlap(text) {
 /* --------------------------------------------------------------- clipboard */
 
 async function copyLink() {
-  const value = els.pickupLink.value;
+  const value = current?.token;
   if (!value) return;
 
-  let copied = false;
   try {
     await navigator.clipboard.writeText(value);
-    copied = true;
-  } catch {
-    els.pickupLink.select();
-    copied = document.execCommand('copy');
-    els.pickupLink.setSelectionRange(0, 0);
-  }
-
-  if (copied) {
     els.copy.textContent = '已复制';
-    setTimeout(() => { els.copy.textContent = '复制ID'; }, 1600);
-  } else {
-    els.pickupLink.select();
-    showNotice('浏览器不允许自动复制');
+    setTimeout(() => {
+      els.copy.textContent = '复制ID';
+    }, 1600);
+  } catch {
+    showNotice('复制失败，请手动复制');
   }
 }
-
 /* ------------------------------------------------------------------ wiring */
 
 buildFlap();
