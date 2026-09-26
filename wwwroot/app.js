@@ -183,10 +183,10 @@ function upload(file) {
 
 function messageFor(status, body) {
   if (body && typeof body.error === 'string') return body.error;
-  if (status === 413) return '文件超过上限。压缩后再试。';
-  if (status === 507) return '暂存空间已满，等已有链接过期后再试。';
-  if (status === 400) return '没有收到文件，请重新选择一个非空文件。';
-  return `上传失败（HTTP ${status || '无响应'}）。稍后再试。`;
+  if (status === 413) return '文件超过上限';
+  if (status === 507) return '暂存空间已满，等已有ID过期后再试';
+  if (status === 400) return '没有收到文件，请重新选择一个非空文件';
+  return `上传失败（HTTP ${status || '无响应'}）。稍后再试`;
 }
 
 /* --------------------------------------------------------------- the ticket */
@@ -201,7 +201,7 @@ function showTicket(data) {
 
   els.pickupLink.value = data.url;
   els.copy.disabled = false;
-  els.copy.textContent = '复制链接';
+  els.copy.textContent = '复制ID';
   els.stamp.hidden = true;
   els.ticket.classList.remove('is-dead');
   els.collect.hidden = false;
@@ -268,7 +268,7 @@ function expire(reason) {
   els.stamp.hidden = false;
   drawFlap('0000');
   els.flap.setAttribute('aria-label', '已到期，文件已删除');
-  els.pickupMeta.textContent = reason || '取件链接已作废，文件已从服务器删除';
+  els.pickupMeta.textContent = reason || 'ID已作废，文件已从服务器删除';
   current = null;
   loadHealth();
 }
@@ -346,10 +346,10 @@ async function copyLink() {
 
   if (copied) {
     els.copy.textContent = '已复制';
-    setTimeout(() => { els.copy.textContent = '复制链接'; }, 1600);
+    setTimeout(() => { els.copy.textContent = '复制ID'; }, 1600);
   } else {
     els.pickupLink.select();
-    showNotice('浏览器不允许自动复制，链接已选中，按 Ctrl+C 复制。');
+    showNotice('浏览器不允许自动复制');
   }
 }
 
