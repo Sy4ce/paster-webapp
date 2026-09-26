@@ -161,6 +161,7 @@ function upload(file) {
     const body = xhr.response;
     if (xhr.status === 201 && body && body.url) {
       els.dropMain.textContent = '上传成功';
+      document.querySelector('.stub--deposit').hidden = true;
       els.dropMeta.textContent = describeLimits();
       setTimeout(() => { els.dropMain.textContent = DEFAULT_DROP_MAIN; }, 2500);
       showTicket(body);
