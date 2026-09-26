@@ -14,7 +14,6 @@
   --panel: #1b2226;
   --panel-2: #12171a;
   --live: #2e7d52;
-
   --display: "Bahnschrift SemiCondensed", "Bahnschrift", "DIN Alternate", "Arial Narrow",
     "Helvetica Neue", "Microsoft YaHei", sans-serif;
   --body: "Segoe UI", system-ui, -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -44,6 +43,9 @@ body {
   line-height: 1.55;
 }
 
+a {
+   text-decoration: none
+}
 .sr-only {
   position: absolute;
   width: 1px;
